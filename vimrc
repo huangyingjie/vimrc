@@ -61,7 +61,7 @@ set showtabline=2
 map <leader>s :source ~/.vimrc<CR>
 
 "CtrlP插件设置
-let g:ctrlp_map = '<leader>p'
+let g:ctrlp_map = '<c-p>'
 let g:ctrlp_by_filename = 1 
 
 " visual模式修改缩进时不退出该模式
