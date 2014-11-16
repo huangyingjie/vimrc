@@ -134,7 +134,7 @@ let g:vimwiki_list = [{
 " TagList setting
 """""""""""""""""""""""""""""
 "Exuberant ctags程序的位置
-let Tlist_Ctags_Cmd="/usr/bin/ctags"
+let Tlist_Ctags_Cmd='/usr/local/bin/ctags'
 let Tlist_Inc_Winwidth=0
 "在右侧窗口打开
 let Tlist_Use_Right_Window=1
@@ -186,9 +186,6 @@ execute pathogen#infect()
 " emmet
 let g:user_emmet_leader_key='<C-y>'
 " let g:user_emmet_settings = webapi#json#decode(join(readfile(expand('~/.snippets_custom.json')), "\n"))
-
-" Taglist
-let Tlist_Ctags_Cmd='/usr/local/bin/ctags' 
 
 map <Leader>n <plug>NERDTreeTabsToggle<CR>
 map <Leader>f <plug>NERDTreeTabsFind<CR>
