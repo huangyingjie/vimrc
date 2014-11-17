@@ -181,8 +181,11 @@ vnoremap <leader>g :call GitBlame()<CR>
 " In normal mode, git blame the current line
 nnoremap <leader>g :exec '!git blame -L '. line("."). ','. line("."). ' %'<CR>
 
-" pathgon
+"初始化pathogen插件
+let pathogen = $HOME . '/.vim/bundle/vim-pathogen/autoload/pathogen.vim'
+execute "source " . pathogen
 execute pathogen#infect()
+
 " emmet
 let g:user_emmet_leader_key='<C-y>'
 " let g:user_emmet_settings = webapi#json#decode(join(readfile(expand('~/.snippets_custom.json')), "\n"))
