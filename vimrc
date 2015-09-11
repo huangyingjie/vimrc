@@ -27,11 +27,28 @@ set ff=unix
 "去除vim ^M符号
 set fileformats=unix,dos
 "缩进为4个空格宽度
-set tabstop=4
+"set tabstop=findfile('.eslintrc', '.;') != '' ? 4 : 2
 "自动缩进使用的空格数
-set shiftwidth=4
+"set shiftwidth=findfile('.eslintrc', '.;') != '' ? 4 : 2
 "编辑插入tab时，把tab算作的空格数
-set softtabstop=4
+"set softtabstop=findfile('.eslintrc', '.;') != '' ? 4 : 2
+
+if findfile('.eslintrc', '.;') == '' 
+    "缩进为4个空格宽度
+    set tabstop=4
+    "自动缩进使用的空格数
+    set shiftwidth=4
+    "编辑插入tab时，把tab算作的空格数
+    set softtabstop=4
+else
+    "缩进为4个空格宽度
+    set tabstop=2
+    "自动缩进使用的空格数
+    set shiftwidth=2
+    "编辑插入tab时，把tab算作的空格数
+    set softtabstop=2
+endif
+
 "缩进使用空格
 set expandtab
 "自动缩进
@@ -108,11 +125,23 @@ autocmd FileType css set foldmethod=marker
 autocmd FileType python filetype plugin indent on
 autocmd FileType python setlocal et sta sw=4 sts=4
 
+" 设置eslint
+autocmd FileType javascript let b:syntastic_checkers = findfile('.eslintrc', '.;') != '' ? ['eslint'] : ['jshint']
+let local_eslint = finddir('node_modules', '.;') . '/.bin/eslint'
+if matchstr(local_eslint, "^\/\\w") == ''
+    let local_eslint = getcwd() . "/" . local_eslint
+endif
+if executable(local_eslint)
+    let g:syntastic_javascript_eslint_exec = local_eslint
+endif
+
 " 设置javascriptlint
-autocmd FileType javascript set makeprg=jshint\ --config\ ~/.jshintrc\ %
+autocmd FileType javascript set &makeprg=jshint\ --config\ ~/.jshintrc\ %
 autocmd FileType javascript set errorformat=%f:\ line\ %l\\,\ col\ %c\\,\ %m
 autocmd FileType javascript inoremap <silent> <F9> <C-O>:make<CR>
 autocmd FileType javascript map <silent> <F9> :make<CR>
+
+let g:jsx_ext_required = 0
 
 " 设置csslint
 autocmd FileType css set makeprg=csslint\ %
@@ -128,6 +157,16 @@ let g:vimwiki_list = [{
 \'path_html': '~/Dropbox/document/vimwiki/html/',
 \'html_header': '~/Dropbox/document/vimwiki/template/header.tpl',
 \}]
+
+" vimrc 相关
+
+nmap <silent> <leader>sv :so $MYVIMRC<CR>
+nmap <silent> <leader>ev :tabe  $MYVIMRC<CR>
+
+augroup reload_vimrc " {
+    autocmd!
+    autocmd BufWritePost $MYVIMRC source $MYVIMRC
+augroup END " }
 
 
 """""""""""""""""""""""""""""
@@ -169,6 +208,14 @@ nmap <silent> <leader>wm :WMToggle<CR>
 "filetype
 filetype plugin on
 
+"copy line
+function! CopyLine() range
+    let beg_line = line("'<")
+    let end_line = line("'>")
+    exec '!sed -n "'. beg_line. ','. end_line. 'p" % | pbcopy'
+endfunction
+vnoremap <leader>c :call CopyLine()<CR>
+
 " In visual mode, git blame the selection
 function! GitBlame() range
 " look up function-range-example for more information
@@ -181,18 +228,16 @@ vnoremap <leader>g :call GitBlame()<CR>
 " In normal mode, git blame the current line
 nnoremap <leader>g :exec '!git blame -L '. line("."). ','. line("."). ' %'<CR>
 
-"初始化pathogen插件
+ "初始化pathogen插件
 let pathogen = $HOME . '/.vim/bundle/vim-pathogen/autoload/pathogen.vim'
 execute "source " . pathogen
 execute pathogen#infect()
-
 " emmet
 let g:user_emmet_leader_key='<C-y>'
 " let g:user_emmet_settings = webapi#json#decode(join(readfile(expand('~/.snippets_custom.json')), "\n"))
 
 map <Leader>n <plug>NERDTreeTabsToggle<CR>
 map <Leader>f <plug>NERDTreeTabsFind<CR>
-map <Leader>t <plug>NERDTreeTabsToggle<CR>
 
 set nocompatible              " be iMproved, required
 filetype off                  " required
@@ -209,3 +254,4 @@ filetype plugin indent on    " required
 if executable('ag')
     let g:ackprg = 'ag --vimgrep'
 endif
+
