@@ -136,7 +136,7 @@ if executable(local_eslint)
 endif
 
 " 设置javascriptlint
-autocmd FileType javascript set &makeprg=jshint\ --config\ ~/.jshintrc\ %
+autocmd FileType javascript set makeprg=jshint\ --config\ ~/.jshintrc\ %
 autocmd FileType javascript set errorformat=%f:\ line\ %l\\,\ col\ %c\\,\ %m
 autocmd FileType javascript inoremap <silent> <F9> <C-O>:make<CR>
 autocmd FileType javascript map <silent> <F9> :make<CR>
