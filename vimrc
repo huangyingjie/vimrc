@@ -127,11 +127,10 @@ autocmd FileType python filetype plugin indent on
 autocmd FileType python setlocal et sta sw=4 sts=4
 
 " 设置eslint
-autocmd FileType javascript let b:syntastic_checkers = findfile('.eslintrc', '.;') != '' ? ['eslint'] : ['jshint']
-let local_eslint = finddir('node_modules', '.;') . '/.bin/eslint'
-if matchstr(local_eslint, "^\/\\w") == ''
-    let local_eslint = getcwd() . "/" . local_eslint
-endif
+let eslintpath = findfile('.eslintrc', '.;')
+autocmd FileType javascript let b:syntastic_checkers = eslintpath != '' ? ['eslint'] : ['jshint']
+" 在eslintrc当前文件夹下找eslint
+let local_eslint = substitute(eslintpath, ".eslintrc", "", "") . "node_modules" . '/.bin/eslint'
 if executable(local_eslint)
     let g:syntastic_javascript_eslint_exec = local_eslint
 endif
