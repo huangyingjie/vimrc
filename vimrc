@@ -57,6 +57,7 @@ set autoindent
 set mouse=v
 "打开语法高亮
 syntax on
+set background=dark
 
 set comments=sl:/*,mb:*,ex:*/
 "映射F5键为空格替换
@@ -255,3 +256,4 @@ if executable('ag')
     let g:ackprg = 'ag --vimgrep'
 endif
 
+colorscheme solarized
