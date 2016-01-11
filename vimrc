@@ -131,9 +131,14 @@ let eslintpath = findfile('.eslintrc', '.;')
 autocmd FileType javascript let b:syntastic_checkers = eslintpath != '' ? ['eslint'] : ['jshint']
 " 在eslintrc当前文件夹下找eslint
 let local_eslint = substitute(eslintpath, ".eslintrc", "", "") . "node_modules" . '/.bin/eslint'
+" 必须加上'./'前缀才能执行
+if matchstr(local_eslint, "^\/\\w") == ''
+    let local_eslint = getcwd() . "/" . local_eslint
+endif
 if executable(local_eslint)
     let g:syntastic_javascript_eslint_exec = local_eslint
 endif
+
 
 " 设置javascriptlint
 autocmd FileType javascript set makeprg=jshint\ --config\ ~/.jshintrc\ %
