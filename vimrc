@@ -120,6 +120,8 @@ filetype on
 au BufNewFile,BufRead *.as set filetype=actionscript
 " Multiple filetype for freemarker
 au BufNewFile,BufRead *.ftl set filetype=ftl.html
+" set vue
+au BufNewFile,BufRead *.vue set filetype=javascript.html
 au BufReadCmd *.jar,*.xpi,*.egg call zip#Browse(expand("<amatch>"))
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType css set foldmethod=marker
@@ -138,10 +140,16 @@ endif
 if executable(local_eslint)
     let g:syntastic_javascript_eslint_exec = local_eslint
 endif
+" In normal mode, eslint fix syntax
+nnoremap <leader>e :exec '!'. local_eslint . ' --fix ' . ' %'<CR>
 
 
 " 设置javascriptlint
+"if eslintpath != ''
+    "autocmd FileType javascript let &makeprg="eslint\ --config\ eslintpath\ %"
+"else
 autocmd FileType javascript set makeprg=jshint\ --config\ ~/.jshintrc\ %
+"endif
 autocmd FileType javascript set errorformat=%f:\ line\ %l\\,\ col\ %c\\,\ %m
 autocmd FileType javascript inoremap <silent> <F9> <C-O>:make<CR>
 autocmd FileType javascript map <silent> <F9> :make<CR>
@@ -187,6 +195,14 @@ let Tlist_File_Fold_Auto_Close=1
 "如果Taglist是最后一个窗口则退出vim
 let Tlist_Exit_OnlyWindow = 1
 
+"""""""""""""""""""""""""""""
+" typescript
+"""""""""""""""""""""""""""""
+let g:typescript_compiler_binary = 'tsc'
+let g:typescript_compiler_options = ''
+autocmd FileType typescript :set makeprg=tsc
+autocmd QuickFixCmdPost [^l]* nested cwindow
+autocmd QuickFixCmdPost    l* nested lwindow
 
 """"""""""""""""""""""""""""""
 " BufExplore settingr
@@ -252,6 +268,7 @@ call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'gmarik/Vundle.vim'
 Plugin 'mileszs/ack.vim'
+Plugin 'junegunn/emoji.vim'
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -261,3 +278,4 @@ if executable('ag')
 endif
 
 colorscheme solarized
+set completefunc=emoji#complete
