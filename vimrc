@@ -26,14 +26,8 @@ set termencoding=utf-8,gbk
 set ff=unix
 "去除vim ^M符号
 set fileformats=unix,dos
-"缩进为4个空格宽度
-"set tabstop=findfile('.eslintrc', '.;') != '' ? 4 : 2
-"自动缩进使用的空格数
-"set shiftwidth=findfile('.eslintrc', '.;') != '' ? 4 : 2
-"编辑插入tab时，把tab算作的空格数
-"set softtabstop=findfile('.eslintrc', '.;') != '' ? 4 : 2
 
-if findfile('.eslintrc', '.;') == '' 
+if findfile('.eslintrc', '.;') == '' && findfile('.eslintrc.js', '.;') == ''
     "缩进为4个空格宽度
     set tabstop=4
     "自动缩进使用的空格数
@@ -62,7 +56,7 @@ set background=dark
 set comments=sl:/*,mb:*,ex:*/
 "映射F5键为空格替换
 map <F5> :%s/\s\+$//cg <CR>
-"映射F6键为格式化语句
+"映射F6键为格式化语n
 map <F6> :call FixStyle() <CR>
 "映射F7键为格式化语句
 map <F7> :call g:Jsbeautify() <CR>
@@ -121,7 +115,8 @@ au BufNewFile,BufRead *.as set filetype=actionscript
 " Multiple filetype for freemarker
 au BufNewFile,BufRead *.ftl set filetype=ftl.html
 " set vue
-au BufNewFile,BufRead *.vue set filetype=javascript.html
+au BufNewFile,BufRead *.vue setf javascript
+
 au BufReadCmd *.jar,*.xpi,*.egg call zip#Browse(expand("<amatch>"))
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType css set foldmethod=marker
@@ -130,9 +125,15 @@ autocmd FileType python setlocal et sta sw=4 sts=4
 
 " 设置eslint
 let eslintpath = findfile('.eslintrc', '.;')
+if eslintpath == ''
+    let eslintpath = findfile('.eslintrc.js', '.;')
+    " 在eslintrc当前文件夹下找eslint
+    let local_eslint = substitute(eslintpath, ".eslintrc.js", "", "") . "node_modules" . '/.bin/eslint'
+else
+    " 在eslintrc当前文件夹下找eslint
+    let local_eslint = substitute(eslintpath, ".eslintrc", "", "") . "node_modules" . '/.bin/eslint'
+endif
 autocmd FileType javascript let b:syntastic_checkers = eslintpath != '' ? ['eslint'] : ['jshint']
-" 在eslintrc当前文件夹下找eslint
-let local_eslint = substitute(eslintpath, ".eslintrc", "", "") . "node_modules" . '/.bin/eslint'
 " 必须加上'./'前缀才能执行
 if matchstr(local_eslint, "^\/\\w") == ''
     let local_eslint = getcwd() . "/" . local_eslint
