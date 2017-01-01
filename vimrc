@@ -125,7 +125,7 @@ autocmd FileType python setlocal et sta sw=4 sts=4
 
 " 设置eslint
 let eslintpath = findfile('.eslintrc', '.;')
-if eslintpath == ''
+if eslintpath == '' || (eslintpath == ($HOME . "/.eslintrc"))
     let eslintpath = findfile('.eslintrc.js', '.;')
     " 在eslintrc当前文件夹下找eslint
     let local_eslint = substitute(eslintpath, ".eslintrc.js", "", "") . "node_modules" . '/.bin/eslint'
