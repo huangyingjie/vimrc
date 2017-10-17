@@ -114,6 +114,7 @@ filetype on
 au BufNewFile,BufRead *.as set filetype=actionscript
 " Multiple filetype for freemarker
 au BufNewFile,BufRead *.ftl set filetype=ftl.html
+au BufNewFile,BufRead *.ejs set filetype=html
 " set vue
 au BufNewFile,BufRead *.vue setf javascript
 
@@ -124,20 +125,20 @@ autocmd FileType python filetype plugin indent on
 autocmd FileType python setlocal et sta sw=4 sts=4
 
 " 设置eslint
-let eslintpath = findfile('.eslintrc', '.;')
-if eslintpath == '' || (eslintpath == ($HOME . "/.eslintrc"))
-    let eslintpath = findfile('.eslintrc.js', '.;')
-    " 在eslintrc当前文件夹下找eslint
-    let local_eslint = substitute(eslintpath, ".eslintrc.js", "", "") . "node_modules" . '/.bin/eslint'
-else
-    " 在eslintrc当前文件夹下找eslint
-    let local_eslint = substitute(eslintpath, ".eslintrc", "", "") . "node_modules" . '/.bin/eslint'
-endif
-autocmd FileType javascript let b:syntastic_checkers = eslintpath != '' ? ['eslint'] : ['jshint']
+"   let eslintpath = findfile('.eslintrc', '.;')
+"   if eslintpath == '' || (eslintpath == ($HOME . "/.eslintrc"))
+"       let eslintpath = findfile('.eslintrc.js', '.;')
+"       " 在eslintrc当前文件夹下找eslint
+"       let local_eslint = substitute(eslintpath, ".eslintrc.js", "", "") . "node_modules" . '/.bin/eslint'
+"   else
+"       " 在eslintrc当前文件夹下找eslint
+"       let local_eslint = substitute(eslintpath, ".eslintrc", "", "") . "node_modules" . '/.bin/eslint'
+"   endif
+autocmd FileType javascript let b:syntastic_checkers = ['eslint']
 " 必须加上'./'前缀才能执行
-if matchstr(local_eslint, "^\/\\w") == ''
-    let local_eslint = getcwd() . "/" . local_eslint
-endif
+" if matchstr(local_eslint, "^\/\\w") == ''
+    let local_eslint = substitute(system("which eslint"), '\n', '', '')
+" endif
 if executable(local_eslint)
     let g:syntastic_javascript_eslint_exec = local_eslint
 endif
@@ -149,11 +150,11 @@ nnoremap <leader>e :exec '!'. local_eslint . ' --fix ' . ' %'<CR>
 "if eslintpath != ''
     "autocmd FileType javascript let &makeprg="eslint\ --config\ eslintpath\ %"
 "else
-autocmd FileType javascript set makeprg=jshint\ --config\ ~/.jshintrc\ %
+"autocmd FileType javascript set makeprg=jshint\ --config\ ~/.jshintrc\ %
 "endif
-autocmd FileType javascript set errorformat=%f:\ line\ %l\\,\ col\ %c\\,\ %m
-autocmd FileType javascript inoremap <silent> <F9> <C-O>:make<CR>
-autocmd FileType javascript map <silent> <F9> :make<CR>
+"autocmd FileType javascript set errorformat=%f:\ line\ %l\\,\ col\ %c\\,\ %m
+"autocmd FileType javascript inoremap <silent> <F9> <C-O>:make<CR>
+"autocmd FileType javascript map <silent> <F9> :make<CR>
 
 let g:jsx_ext_required = 0
 
@@ -269,7 +270,6 @@ call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'gmarik/Vundle.vim'
 Plugin 'mileszs/ack.vim'
-Plugin 'junegunn/emoji.vim'
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -289,4 +289,3 @@ let g:tern_show_argument_hints='on_hold'
 let g:tern_map_keys=1
 
 colorscheme solarized
-set completefunc=emoji#complete
