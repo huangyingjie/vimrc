@@ -1,5 +1,8 @@
 "设置mapleader
 let mapleader="'"
+"支持本地读取.vimrc
+set exrc
+set secure
 "非兼容模式
 set nocp
 "底部标尺
@@ -21,27 +24,18 @@ set enc=utf-8
 "打开文件进行解码的猜测列表，优先以utf-8打开
 set fileencodings=utf-8,gbk
 "termencoding
-set termencoding=utf-8,gbk
+set termencoding=utf-8
 "文件默认格式unix
 set ff=unix
 "去除vim ^M符号
 set fileformats=unix,dos
 
-if findfile('.eslintrc', '.;') == '' && findfile('.eslintrc.js', '.;') == ''
-    "缩进为4个空格宽度
-    set tabstop=4
-    "自动缩进使用的空格数
-    set shiftwidth=4
-    "编辑插入tab时，把tab算作的空格数
-    set softtabstop=4
-else
-    "缩进为4个空格宽度
-    set tabstop=2
-    "自动缩进使用的空格数
-    set shiftwidth=2
-    "编辑插入tab时，把tab算作的空格数
-    set softtabstop=2
-endif
+"缩进为4个空格宽度
+set tabstop=2
+"自动缩进使用的空格数
+set shiftwidth=2
+"编辑插入tab时，把tab算作的空格数
+set softtabstop=2
 
 "缩进使用空格
 set expandtab
@@ -65,7 +59,7 @@ map <F10> :%s/\r//<CR>
 "设置字典
 autocmd FileType javascript set dictionary=~/.vim/dict/javascript.dict
 "默认配色为darkblue
-color darkbluefix
+"color darkbluefix
 "显示标签栏 0: 从不 1: 大于1个时显示 2: 总是
 set showtabline=2
 
@@ -75,13 +69,17 @@ map <leader>s :source ~/.vimrc<CR>
 "CtrlP插件设置
 let g:ctrlp_map = '<leader>p'
 let g:ctrlp_by_filename = 1 
+let g:ctrlp_custom_ignore = {
+\ 'dir':  '\v[\/]((\.(git|hg|svn))|(node_modules))$',
+\ 'file': '\v\.(exe|so|dll|swp|zip)$',
+\ }
 
 " visual模式修改缩进时不退出该模式
 vnoremap < <gv
 vnoremap > >gv
 
 "映射Ctrl+F12键为行号的开关
-map <C-F12> :set number!<CR>
+nmap <C-F12> :set number!<CR>
 
 nmap <C-N> :tabnext<CR>
 nmap <C-P> :tabprevious<CR>
@@ -134,16 +132,16 @@ autocmd FileType python setlocal et sta sw=4 sts=4
 "       " 在eslintrc当前文件夹下找eslint
 "       let local_eslint = substitute(eslintpath, ".eslintrc", "", "") . "node_modules" . '/.bin/eslint'
 "   endif
-autocmd FileType javascript let b:syntastic_checkers = ['eslint']
+"autocmd FileType javascript let b:ale_linters = ['eslint']
 " 必须加上'./'前缀才能执行
 " if matchstr(local_eslint, "^\/\\w") == ''
     let local_eslint = substitute(system("which eslint"), '\n', '', '')
 " endif
-if executable(local_eslint)
-    let g:syntastic_javascript_eslint_exec = local_eslint
-endif
+"if executable(local_eslint)
+"let g:syntastic_javascript_eslint_exec = local_eslint
+" endif
 " In normal mode, eslint fix syntax
-nnoremap <leader>e :exec '!'. local_eslint . ' --fix ' . ' %'<CR>
+" nnoremap <leader>e :exec '!'. local_eslint . ' --fix ' . ' %'<CR>
 
 
 " 设置javascriptlint
@@ -188,7 +186,6 @@ augroup END " }
 " TagList setting
 """""""""""""""""""""""""""""
 "Exuberant ctags程序的位置
-let Tlist_Ctags_Cmd='/usr/local/bin/ctags'
 let Tlist_Inc_Winwidth=0
 "在右侧窗口打开
 let Tlist_Use_Right_Window=1
@@ -251,41 +248,101 @@ vnoremap <leader>g :call GitBlame()<CR>
 " In normal mode, git blame the current line
 nnoremap <leader>g :exec '!git blame -L '. line("."). ','. line("."). ' %'<CR>
 
- "初始化pathogen插件
-let pathogen = $HOME . '/.vim/bundle/vim-pathogen/autoload/pathogen.vim'
-execute "source " . pathogen
-execute pathogen#infect()
 " emmet
 let g:user_emmet_leader_key='<C-y>'
+
 " let g:user_emmet_settings = webapi#json#decode(join(readfile(expand('~/.snippets_custom.json')), "\n"))
+" " Specify a directory for plugins
+" - For Neovim: stdpath('data') . '/plugged'
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin('~/.vim/plugged')
+" Initialize plugin system
+Plug 'easymotion/vim-easymotion'
+Plug 'preservim/nerdcommenter'
+Plug 'preservim/nerdtree'
+Plug 'jistr/vim-nerdtree-tabs'
+Plug 'dense-analysis/ale'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'mattn/emmet-vim'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'kshenoy/vim-signature'
+Plug 'codota/tabnine-vim'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'altercation/vim-colors-solarized'
+Plug 'majutsushi/tagbar'
+"Plug 'ludovicchabant/vim-gutentags'
+"Plug 'szw/vim-tags'
+"Plug 'xolox/vim-misc'
+"Plug 'xolox/vim-easytags'
+Plug 'posva/vim-vue'
+Plug 'tikhomirov/vim-glsl'
+Plug 'leafgarland/typescript-vim'
+
+call plug#end()
 
 map <Leader>n <plug>NERDTreeTabsToggle<CR>
 map <Leader>f <plug>NERDTreeTabsFind<CR>
+let g:NERDTreeWinSize=40
+" tags配置
+"set statusline+=%{gutentags#statusline()}
+"let g:gutentags_exclude_project_root=['node_modules']
+" gutentags搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归 "
+" let g:gutentags_project_root = ['.root', '.svn', '.git', '.project']
+" " 所生成的数据文件的名称 "
+" let g:gutentags_ctags_tagfile = '.tags'
+" " 将自动生成的 tags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录 "
+" let s:vim_tags = expand('~/.cache/tags')
+" let g:gutentags_cache_dir = s:vim_tags
+" " 检测 ~/.cache/tags 不存在就新建 "
+" if !isdirectory(s:vim_tags)
+"    silent! call mkdir(s:vim_tags, 'p')
+" endif
 
-set nocompatible              " be iMproved, required
-filetype off                  " required
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-" let Vundle manage Vundle, required
-Plugin 'gmarik/Vundle.vim'
-Plugin 'mileszs/ack.vim'
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
+" easymotion
+let g:EasyMotion_do_mapping = 0 " Disable default mappings
+" Jump to anywhere you want with minimal keystrokes, with just one key binding.
+" `s{char}{label}`
+"nmap s <Plug>(easymotion-overwin-f)
+" or
+" `s{char}{char}{label}`
+" Need one more keystroke, but on average, it may be more comfortable.
+nmap s <Plug>(easymotion-s2)
 
-if executable('ag')
-    let g:ackprg = 'ag --vimgrep'
-endif
+" Turn on case-insensitive feature
+let g:EasyMotion_smartcase = 1
 
-Bundle 'Valloric/YouCompleteMe' 
+" JK motions: Line motions
+map <Leader>j <Plug>easymotion-j
+map <Leader>k <Plug>(easymotion-k)
 
-"""""""""""""""""
-" Tern settings
-"""""""""""""""""
-Bundle 'marijnh/tern_for_vim'
-let g:tern_show_argument_hints='on_hold'
-" and
-let g:tern_map_keys=1
+
+
+let g:EasyMotion_smartcase = 1
+map <leader>h <Plug>(easymotion-linebackward)
+map <leader>l <Plug>(easymotion-lineforward)
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
+map <leader>. <Plug>(easymotion-repeat)
+
+" fzf mapping
+" Mapping selecting mappings
+nmap <leader><tab> <plug>(fzf-maps-n)
+xmap <leader><tab> <plug>(fzf-maps-x)
+omap <leader><tab> <plug>(fzf-maps-o)
+
+" Insert mode completion
+imap <c-x><c-k> <plug>(fzf-complete-word)
+imap <c-x><c-f> <plug>(fzf-complete-path)
+imap <c-x><c-l> <plug>(fzf-complete-line)
+
+" ale for eslint
+let g:ale_linter_aliases = {'vue': ['vue', 'javascript', 'typescript']}
+let g:ale_linters = {'vue': ['eslint', 'stylelint']}
 
 colorscheme solarized
