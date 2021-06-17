@@ -114,7 +114,7 @@ au BufNewFile,BufRead *.as set filetype=actionscript
 au BufNewFile,BufRead *.ftl set filetype=ftl.html
 au BufNewFile,BufRead *.ejs set filetype=html
 " set vue
-au BufNewFile,BufRead *.vue setf javascript
+au BufNewFile,BufRead *.vue setf vue
 
 au BufReadCmd *.jar,*.xpi,*.egg call zip#Browse(expand("<amatch>"))
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
@@ -122,37 +122,6 @@ autocmd FileType css set foldmethod=marker
 autocmd FileType python filetype plugin indent on
 autocmd FileType python setlocal et sta sw=4 sts=4
 
-" 设置eslint
-"   let eslintpath = findfile('.eslintrc', '.;')
-"   if eslintpath == '' || (eslintpath == ($HOME . "/.eslintrc"))
-"       let eslintpath = findfile('.eslintrc.js', '.;')
-"       " 在eslintrc当前文件夹下找eslint
-"       let local_eslint = substitute(eslintpath, ".eslintrc.js", "", "") . "node_modules" . '/.bin/eslint'
-"   else
-"       " 在eslintrc当前文件夹下找eslint
-"       let local_eslint = substitute(eslintpath, ".eslintrc", "", "") . "node_modules" . '/.bin/eslint'
-"   endif
-"autocmd FileType javascript let b:ale_linters = ['eslint']
-" 必须加上'./'前缀才能执行
-" if matchstr(local_eslint, "^\/\\w") == ''
-    let local_eslint = substitute(system("which eslint"), '\n', '', '')
-" endif
-"if executable(local_eslint)
-"let g:syntastic_javascript_eslint_exec = local_eslint
-" endif
-" In normal mode, eslint fix syntax
-" nnoremap <leader>e :exec '!'. local_eslint . ' --fix ' . ' %'<CR>
-
-
-" 设置javascriptlint
-"if eslintpath != ''
-    "autocmd FileType javascript let &makeprg="eslint\ --config\ eslintpath\ %"
-"else
-"autocmd FileType javascript set makeprg=jshint\ --config\ ~/.jshintrc\ %
-"endif
-"autocmd FileType javascript set errorformat=%f:\ line\ %l\\,\ col\ %c\\,\ %m
-"autocmd FileType javascript inoremap <silent> <F9> <C-O>:make<CR>
-"autocmd FileType javascript map <silent> <F9> :make<CR>
 
 let g:jsx_ext_required = 0
 
@@ -282,7 +251,6 @@ Plug 'majutsushi/tagbar'
 "Plug 'xolox/vim-easytags'
 Plug 'posva/vim-vue'
 Plug 'tikhomirov/vim-glsl'
-Plug 'leafgarland/typescript-vim'
 
 call plug#end()
 
@@ -341,8 +309,8 @@ imap <c-x><c-k> <plug>(fzf-complete-word)
 imap <c-x><c-f> <plug>(fzf-complete-path)
 imap <c-x><c-l> <plug>(fzf-complete-line)
 
-" ale for eslint
-let g:ale_linter_aliases = {'vue': ['vue', 'javascript', 'typescript']}
-let g:ale_linters = {'vue': ['eslint', 'stylelint']}
+" ale for vue/ts
+let g:ale_linters = { 'vue': ['vls'], 'typescript': ['tsserver'] }
+let g:ale_echo_msg_format = '%linter%: %s'
 
 colorscheme solarized
