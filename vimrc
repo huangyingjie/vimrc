@@ -240,17 +240,19 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'kshenoy/vim-signature'
-Plug 'codota/tabnine-vim'
+"Plug 'zxqfl/tabnine-vim', {'branch': 'python3'}
+Plug 'tabnine/YouCompleteMe'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'altercation/vim-colors-solarized'
 Plug 'majutsushi/tagbar'
-"Plug 'ludovicchabant/vim-gutentags'
+Plug 'ludovicchabant/vim-gutentags'
 "Plug 'szw/vim-tags'
 "Plug 'xolox/vim-misc'
 "Plug 'xolox/vim-easytags'
 Plug 'posva/vim-vue'
 Plug 'tikhomirov/vim-glsl'
+Plug 'prabirshrestha/vim-lsp'
 
 call plug#end()
 
@@ -258,19 +260,37 @@ map <Leader>n <plug>NERDTreeTabsToggle<CR>
 map <Leader>f <plug>NERDTreeTabsFind<CR>
 let g:NERDTreeWinSize=40
 " tags配置
-"set statusline+=%{gutentags#statusline()}
-"let g:gutentags_exclude_project_root=['node_modules']
+set statusline+=%{gutentags#statusline()}
+let g:gutentags_exclude_project_root=['node_modules']
 " gutentags搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归 "
-" let g:gutentags_project_root = ['.root', '.svn', '.git', '.project']
-" " 所生成的数据文件的名称 "
-" let g:gutentags_ctags_tagfile = '.tags'
-" " 将自动生成的 tags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录 "
-" let s:vim_tags = expand('~/.cache/tags')
-" let g:gutentags_cache_dir = s:vim_tags
-" " 检测 ~/.cache/tags 不存在就新建 "
-" if !isdirectory(s:vim_tags)
-"    silent! call mkdir(s:vim_tags, 'p')
-" endif
+let g:gutentags_add_default_project_roots = 0
+let g:gutentags_project_root = ['.root', '.svn', '.git', '.project', 'package.json' ]
+" 所生成的数据文件的名称 "
+ let g:gutentags_ctags_tagfile = '.tags'
+" 将自动生成的 tags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录 "
+ let s:vim_tags = expand('~/.cache/tags')
+ let g:gutentags_cache_dir = s:vim_tags
+" 检测 ~/.cache/tags 不存在就新建 "
+if !isdirectory(s:vim_tags)
+   silent! call mkdir(s:vim_tags, 'p')
+endif
+" regernrate ctags
+let g:gutentags_generate_on_write = 1
+let g:gutentags_generate_on_new = 1
+let g:gutentags_generate_on_missing = 1
+let g:gutentags_generate_on_write = 1
+let g:gutentags_generate_on_empty_buffer = 0
+" extra info
+let g:gutentags_ctags_extra_args = [
+      \ '--tag-relative=yes',
+      \ '--fields=+ailmnS',
+      \ ]
+command! -nargs=0 GutentagsClearCache call system('rm ' . g:gutentags_cache_dir . '/*')
+" Making Gutentags faster by ignoring a lot of unnecessary filetypes.
+let g:gutentags_ctags_exclude = [ '*.git', '*.svg', '*.hg', 'test*', 'benchmark*', '*/tests/*', 'build', 'dist', 'packages', '*sites/*/files/*', 'bin', 'node_modules', 'bower_components', 'cache', 'compiled', 'docs', 'example', 'bundle', 'vendor', '*.md', '*-lock.json', '*.lock', '*bundle*.js', '*build*.js', '.*rc*', '*.json', '*.min.*', '*.map', '*.bak', '*.zip', '*.pyc', '*.class', '*.sln', '*.Master', '*.csproj', '*.tmp', '*.csproj.user', '*.cache', '*.pdb', 'tags*', 'cscope.*', '*.css', '*.less', '*.scss', '*.exe', '*.dll', '*.mp3', '*.ogg', '*.flac', '*.swp', '*.swo', '*.bmp', '*.gif', '*.ico', '*.jpg', '*.png', '*.rar', '*.zip', '*.tar', '*.tar.gz', '*.tar.xz', '*.tar.bz2', '*.pdf', '*.doc', '*.docx', '*.ppt', '*.pptx' ]
+
+" debug
+"let g:gutentags_trace = 1
 
 " easymotion
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
@@ -312,5 +332,9 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 " ale for vue/ts
 let g:ale_linters = { 'vue': ['vls'], 'typescript': ['tsserver'] }
 let g:ale_echo_msg_format = '%linter%: %s'
+
+" YouAutoComplete close preview
+set completeopt-=preview
+let g:ycm_auto_hover=0
 
 colorscheme solarized

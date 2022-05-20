@@ -11,8 +11,9 @@ export ZSH=/Users/huangyingjie/.oh-my-zsh
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
 ZSH_THEME="agnoster"
 # 指定默认VIM
-export EDITOR="/usr/local/Cellar/vim/8.2.1200/bin/vim"
+export EDITOR="/opt/homebrew/bin/vim"
 
+alias python3="/opt/homebrew/bin/python3"
 alias vi="vim"
 alias -s js=vi
 alias -s yml=vi
@@ -75,7 +76,7 @@ plugins=(
   autojump
   zsh-autosuggestions
   zsh-syntax-highlighting
-  osx
+  macos
   nvm
 )
 
@@ -144,7 +145,7 @@ export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
 #[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 #[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 # fnm
-eval "$(fnm env --multi)"
+# eval "$(fnm env --multi)"
 
 # Created by mirror-config-china
 export IOJS_ORG_MIRROR=https://npm.taobao.org/mirrors/iojs
@@ -182,3 +183,6 @@ fi
 
 
 export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)
+
+export PNPM_HOME="/Users/huangyingjie/Library/pnpm"
+export PATH="$PNPM_HOME:$PATH"
