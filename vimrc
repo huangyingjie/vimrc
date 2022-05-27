@@ -253,13 +253,16 @@ Plug 'ludovicchabant/vim-gutentags'
 Plug 'posva/vim-vue'
 Plug 'tikhomirov/vim-glsl'
 Plug 'prabirshrestha/vim-lsp'
+Plug 'Shougo/unite.vim'
+Plug 'junegunn/vim-emoji'
+Plug 'mileszs/ack.vim'
+Plug 'devjoe/vim-codequery'
 
 call plug#end()
 
 map <Leader>n <plug>NERDTreeTabsToggle<CR>
 map <Leader>f <plug>NERDTreeTabsFind<CR>
-let g:NERDTreeWinSize=40
-" tags配置
+let g:NERDTreeWinSize=40 " tags配置
 set statusline+=%{gutentags#statusline()}
 let g:gutentags_exclude_project_root=['node_modules']
 " gutentags搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归 "
@@ -329,12 +332,19 @@ imap <c-x><c-k> <plug>(fzf-complete-word)
 imap <c-x><c-f> <plug>(fzf-complete-path)
 imap <c-x><c-l> <plug>(fzf-complete-line)
 
+set completefunc=emoji#complete
+
 " ale for vue/ts
-let g:ale_linters = { 'vue': ['vls'], 'typescript': ['tsserver'] }
+let g:ale_linters = { 'vue': ['vls'], 'typescript': ['tsserver'], 'javascript': [ 'eslint', 'flow-language-server', 'standard'] }
 let g:ale_echo_msg_format = '%linter%: %s'
+let g:ale_sign_error = '😈'
 
 " YouAutoComplete close preview
 set completeopt-=preview
 let g:ycm_auto_hover=0
 
 colorscheme solarized
+" load cscope
+if !empty(glob("./cscope.out"))
+  cs add cscope.out
+endif
